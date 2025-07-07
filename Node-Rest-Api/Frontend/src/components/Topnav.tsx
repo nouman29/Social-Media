@@ -1,6 +1,8 @@
 import { Bell, MessageSquare, Search, User } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
+  
 export default function TopNav() {
+  const navigate = useNavigate();
   return (
     <div className="h-[60px] w-full bg-blue-900 text-white flex items-center justify-between px-6 fixed z-10">
       {/* Left: App Name */}
@@ -21,8 +23,8 @@ export default function TopNav() {
         </div>
 
         <div className="flex gap-6 text-sm font-medium">
-          <span className="cursor-pointer hover:text-gray-300">Homepage</span>
-          <span className="cursor-pointer hover:text-gray-300">Timeline</span>
+          <span className="cursor-pointer hover:text-gray-300" onClick={() => navigate('/profile')}>Homepage</span>
+          <span className="cursor-pointer hover:text-gray-300" onClick={() => navigate('/dashboard')}>Timeline</span>
         </div>
       </div>
 
@@ -31,7 +33,7 @@ export default function TopNav() {
         <User className="cursor-pointer hover:text-gray-300" />
         <MessageSquare className="cursor-pointer hover:text-gray-300" />
         <Bell className="cursor-pointer hover:text-gray-300" />
-        <div className="w-9 h-9 rounded-full bg-white">
+        <div className="w-9 h-9 rounded-full bg-white" onClick={() => navigate('/profile')}>
             <img src="person.jpg" alt="" className="w-full h-full rounded-full" />
         </div>
       </div>

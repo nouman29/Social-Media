@@ -10,35 +10,35 @@ export function LoginForm({
 }: React.ComponentProps<"form">) {
   const navigate = useNavigate();
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-3xl font-bold text-white">Login to your account</h1>
-        <p className="text-muted-foreground text-xs text-balance">
+    <form className={cn("flex flex-col gap-4", className)} {...props}>
+      <div className="flex flex-col items-center gap-1 text-center">
+        <h1 className="text-2xl font-bold text-blue-800">Login to your account</h1>
+        <p className="text-blue-600 text-xs">
           Enter your email below to login to your account
         </p>
       </div>
-      <div className="grid gap-6">
-        <div className="grid gap-3">
-          <Label htmlFor="email" className="text-white text-lg">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" className="bg-black text-white " required />
+      <div className="grid gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="email" className="text-blue-800 text-sm">Email</Label>
+          <Input id="email" type="email" placeholder="m@example.com" className="bg-white text-blue-800" required />
         </div>
-        <div className="grid gap-3">
+        <div className="grid gap-2">
           <div className="flex items-center">
-            <Label htmlFor="password" className="text-white text-lg">Password</Label>
+            <Label htmlFor="password" className="text-blue-800 text-sm">Password</Label>
             <a
               href="#"
-              className="ml-auto text-sm underline-offset-4 hover:underline text-white border-white"
+              className="ml-auto text-xs underline-offset-4 hover:underline text-blue-600"
             >
               Forgot your password?
             </a>
           </div>
-          <Input id="password" type="password" placeholder="********" className="bg-black text-white" required />
+          <Input id="password" type="password" placeholder="********" className="bg-white text-blue-800" required />
         </div>
-        <Button type="submit" onClick={() => navigate('/dashboard')} className="w-full bg-white text-black hover:bg-white/60">
+        <Button type="submit" onClick={() => navigate('/dashboard')} className="w-full bg-blue-600 text-white hover:bg-blue-700">
           Login
         </Button>
-        <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-          <span className="bg-background  relative z-10 px-2 text-black">
+        <div className="after:border-border relative text-center text-xs after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+          <span className="bg-white relative z-10 px-2 text-blue-800">
             Or continue with
           </span>
         </div>
@@ -52,7 +52,7 @@ export function LoginForm({
           Login with GitHub
         </Button>
       </div>
-      <div className="text-center text-sm text-white">
+      <div className="text-center text-xs text-blue-800">
         Don&apos;t have an account?{" "}
         <a href="#" onClick={() => navigate('/signup')} className="underline underline-offset-4">
           Sign up
