@@ -80,9 +80,9 @@ router.get("/:id", async (req, res) => {
     }
 }); 
 
-router.get("/timeline/all", async (req, res) => {
+router.get("/timeline/all/:id", async (req, res) => {
     try {
-        const currentUser = await User.findById(req.body.userId);
+        const currentUser = await User.findById(req.params.id);
         if(!currentUser) return res.status(404).json("User not found");
         const userPosts = await Post.find({ userId: currentUser._id });
         const friendPosts = await Promise.all(

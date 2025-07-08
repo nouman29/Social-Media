@@ -1,30 +1,77 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { data, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"form">) {
+interface LoginFormProps {
+  onLogin: (formData: { email: string; password: string }) => void;
+}
+
+export function LoginForm({ onLogin }: LoginFormProps) {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const response = await axios.post(
+      "http://localhost:3000/api/auth/login",
+      {
+        email,
+        password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log(response);
+    toast.success("Login successful!");
+    navigate('/dashboard');
+    // Call the onLogin prop to notify parent component
+    onLogin({
+      email,
+      password,
+    });
+  };
+
   return (
-    <form className={cn("flex flex-col gap-4", className)} {...props}>
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <div className="flex flex-col items-center gap-1 text-center">
-        <h1 className="text-2xl font-bold text-blue-800">Login to your account</h1>
+        <h1 className="text-2xl font-bold text-blue-800">
+          Login to your account
+        </h1>
         <p className="text-blue-600 text-xs">
           Enter your email below to login to your account
         </p>
       </div>
       <div className="grid gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="email" className="text-blue-800 text-sm">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" className="bg-white text-blue-800" required />
+          <Label htmlFor="email" className="text-blue-800 text-sm">
+            Email
+          </Label>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="m@example.com"
+            className="bg-white text-blue-800"
+            autoComplete="email"
+            required
+          />
         </div>
         <div className="grid gap-2">
           <div className="flex items-center">
-            <Label htmlFor="password" className="text-blue-800 text-sm">Password</Label>
+            <Label htmlFor="password" className="text-blue-800 text-sm">
+              Password
+            </Label>
             <a
               href="#"
               className="ml-auto text-xs underline-offset-4 hover:underline text-blue-600"
@@ -32,9 +79,21 @@ export function LoginForm({
               Forgot your password?
             </a>
           </div>
-          <Input id="password" type="password" placeholder="********" className="bg-white text-blue-800" required />
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="********"
+            className="bg-white text-blue-800"
+            autoComplete="current-password"
+            required
+          />
         </div>
-        <Button type="submit" onClick={() => navigate('/dashboard')} className="w-full bg-blue-600 text-white hover:bg-blue-700">
+        <Button
+          type="submit"
+          className="w-full bg-blue-600 text-white hover:bg-blue-700"
+        >
           Login
         </Button>
         <div className="after:border-border relative text-center text-xs after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -54,10 +113,14 @@ export function LoginForm({
       </div>
       <div className="text-center text-xs text-blue-800">
         Don&apos;t have an account?{" "}
-        <a href="#" onClick={() => navigate('/signup')} className="underline underline-offset-4">
+        <a
+          href="#"
+          onClick={() => navigate("/signup")}
+          className="underline underline-offset-4"
+        >
           Sign up
         </a>
       </div>
     </form>
-  )
+  );
 }

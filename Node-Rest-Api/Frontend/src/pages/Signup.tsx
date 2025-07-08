@@ -1,8 +1,16 @@
 import SignupForm from '@/components/SignupForm';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignupPage() {
-    const handleSignup = (email: string, password: string) => {
-      console.log('Signing up with:', email, password);
+    const navigate = useNavigate();
+    const handleSignup = (formData: {
+      email: string;
+      password: string;
+      username: string;
+      city: string;
+      country: string;
+    }) => {
+      console.log('Signing up with:', formData);
     };
   
     return (
@@ -21,12 +29,9 @@ export default function SignupPage() {
   
           <div className="text-sm text-center text-blue-600">
             Already have an account?{' '}
-            <a
-              href="/login"
-              className="font-medium text-blue-800 hover:text-blue-700"
-            >
+            <button type="submit" onClick={() => navigate('/login')} className="font-medium text-blue-800 hover:text-blue-700 cursor-pointer">
               Sign in
-            </a>
+            </button>
           </div>
         </div>
       </div>
