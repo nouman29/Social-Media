@@ -11,6 +11,7 @@ interface SignupFormProps {
     username: string;
     city: string;
     country: string;
+    profilePicture: string;
   }) => void;
 }
 
@@ -22,7 +23,19 @@ export default function SignupForm({ onSignup }: SignupFormProps) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [profilePicture, setProfilePicture] = useState('');
   const navigate = useNavigate();
+
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        setProfilePicture(reader.result as string); // base64 string
+    };
+    if (file) reader.readAsDataURL(file);
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +54,8 @@ export default function SignupForm({ onSignup }: SignupFormProps) {
         password,
         username,
         city,
-        country
+        country,
+        profilePicture
       };
 
       const response = await axios.post('http://localhost:3000/api/auth/register', requestData, {
@@ -68,7 +82,8 @@ export default function SignupForm({ onSignup }: SignupFormProps) {
         password,
         username,
         city,
-        country
+        country,
+        profilePicture
       });
 
     } catch (error) {
@@ -98,6 +113,18 @@ export default function SignupForm({ onSignup }: SignupFormProps) {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               disabled={isLoading}
+            />
+          </div>
+          <div>
+            <label htmlFor="profilePicture" className="block text-sm font-medium text-blue-800 mb-1">
+              Profile Picture
+            </label>
+            <input
+              type="file"
+              id="profilePicture"
+              name="profilePicture"
+              onChange={handleImageChange}
+              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:border-blue-500"
             />
           </div>
 
@@ -184,7 +211,7 @@ export default function SignupForm({ onSignup }: SignupFormProps) {
               disabled={isLoading}
             />
           </div>
-        </div>
+          </div>
 
         <div>
           <button

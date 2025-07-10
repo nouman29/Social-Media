@@ -1,34 +1,53 @@
 // Import necessary components and types
 import { MoreHorizontal, ThumbsUp } from "lucide-react";
-// import { Users, Posts } from "../data/dummyData";
-// import type { User, Post } from "../data/dummyData";
-import { useEffect, useState } from "react";
-import axios from "axios";
+
+import { useState } from "react";
+import axios from 'axios';
+import { useEffect } from 'react';
+import Cookies from 'js-cookie';
+
+// Define a type for the post
+interface Post {
+  id: number;
+  desc: string;
+  img: string | null;
+  createdAt: string;
+  comment: number;
+  username: string;
+  userId: {
+    username: string;
+    _id: string;
+    email: string;
+    password: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+    profilePicture: string;
+  };
+}
 
 export default function Post() {
-  const [posts, setPosts] = useState<any[]>([]);
-  const [currentUser, setCurrentUser] = useState<string | null>(null);
-  const [postedBy, setPostedBy] = useState<string | null>(null);
-
+  const [posts, setPosts] = useState<Post[]>([]); // Use Post type for state
   const [likes, setLikes] = useState<number[]>([]);
   const [likedStatus, setLikedStatus] = useState<boolean[]>([]);
-  
+
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await axios.get("http://localhost:3000/api/posts/timeline/all/6868d756889f1db122609475"); 
-      const data = await response.data;
-      setCurrentUser(data.userId);
-      setPosts(data);
-      setLikes(data.map(() => 0)); // Initialize likes array
-      setLikedStatus(data.map(() => false)); // Initialize liked status array
-    };  
-    fetchPosts();
-    const fetchUser = async () => {
-      const response = await axios.get("http://localhost:3000/api/users/6868d756889f1db122609475");
-      const data = await response.data;
-      setPostedBy(data);
+      try {
+        const response = await axios.get('http://localhost:3000/api/posts/timeline/all', {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }); 
+        console.log(response.data)
+        setPosts(response.data.allPosts);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
     };
-    fetchUser();
+
+    fetchPosts();
   }, []);
 
   const handleLike = (index: number) => {
@@ -40,53 +59,62 @@ export default function Post() {
     setLikedStatus(newLikedStatus);
   };
 
-  console.log(posts);
-  console.log(currentUser);
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
   
   // Render the posts
   return (
     <>
-      {posts?.map((post: any, index: number) => {
-        // Find the user who created the post
-
+      {posts.length > 0 ? posts.map((post, index: number) => {
         return (
           <div
-            key={post.userId}
-            className="bg-white shadow rounded-lg p-4 mb-4 max-w-3xl mx-auto "
+            key={post.id}
+            className="bg-white shadow rounded-lg p-4 mb-4 max-w-3xl mx-auto"
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center">
                 {/* User profile picture */}
                 <img
-                  src={postedBy ? postedBy.profilePicture : "person.jpg"}
+                  src={post.userId.profilePicture}
                   alt="Profile"
                   className="w-10 h-10 rounded-full mr-3"
                 />
                 <div>
                   {/* User name and post date */}
                   <h3 className="font-bold text-black">
-                    {postedBy ? postedBy.username : "You"}
+                    {post.username}
                   </h3>
-                  <p className="text-sm text-gray-500">{post.createdAt}</p>
+                  <p className="text-sm text-gray-500">{formatDate(post.createdAt)}</p>
                 </div>
               </div>
               {/* More options icon */}
-              <MoreHorizontal className="text-gray-500" />
+              <MoreHorizontal className="text-gray-500 cursor-pointer hover:text-gray-700" />
             </div>
             {/* Post description */}
             <p className="mb-3 text-black">{post.desc}</p>
             {/* Post image */}
-            <img
-              src={post.photo || "post.png"}
-              alt="Post"
-              style={{ width: "100%", height: "65vh" }}
-              className="w-full rounded-lg mb-3"
-            />
-            <div className="flex  items-center justify-between text-sm text-gray-500">
+            {post.img && (
+              <img
+                src={post.img}
+                alt="Post"
+                style={{ width: "100%", height: "65vh" }}
+                className="w-full rounded-lg mb-3 object-cover"
+              />
+            )}
+            <div className="flex items-center justify-between text-sm text-gray-500">
               <div className="flex items-center gap-2">
                 {/* Like button and count */}
                 <ThumbsUp
-                  className={`mr-1 ${likedStatus[index] ? "text-blue-500" : ""}`}
+                  className={`mr-1 cursor-pointer transition-colors ${
+                    likedStatus[index] ? "text-blue-500" : "hover:text-blue-400"
+                  }`}
                   onClick={() => handleLike(index)}
                 />
                 <span className="text-md">{likes[index]} people like this</span>
@@ -96,7 +124,7 @@ export default function Post() {
             </div>
           </div>
         );
-      })}
+      }) : <p>No posts available</p>} {/* Handle case when no posts are available */}
     </>
   );
-  }
+}
