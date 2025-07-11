@@ -49,7 +49,8 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string);
-    res.cookie("token", `Bearer ${token}`, {  // Prepend "Bearer " to the token
+    res.cookie("token", `Bearer ${token}`, {
+      // Prepend "Bearer " to the token
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -62,6 +63,7 @@ router.post("/login", async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        profilePicture: user.profilePicture,
       },
     });
   } catch (err) {
