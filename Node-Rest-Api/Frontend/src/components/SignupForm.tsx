@@ -86,9 +86,9 @@ export default function SignupForm({ onSignup }: SignupFormProps) {
         profilePicture
       });
 
-    } catch (error) {
-      console.error('Registration failed:', error);
-      toast.error('Registration failed. Please try again.');
+    } catch (error:any) {
+      const errorMessage = error.response?.data?.message ;
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

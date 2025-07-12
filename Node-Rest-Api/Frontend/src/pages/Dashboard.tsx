@@ -19,7 +19,7 @@ export default function DashboardPage() {
           {/* main content */}
           <div className="w-full md:w-3/5 text-white h-auto md:h-full space-y-4">
             <PostBox />
-            <Post />
+            <Post/>
           </div>
           <div className="w-full md:w-1/5 h-auto md:h-full">
             <RightNav />

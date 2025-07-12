@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { data, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+import { useUserStore } from "@/store/userStore";
 
 interface LoginFormProps {
   onLogin: (formData: { email: string; password: string }) => void;
@@ -17,31 +18,43 @@ export function LoginForm({ onLogin }: LoginFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const response = await axios.post(
-      "http://localhost:3000/api/auth/login",
-      {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/login",
+        {
+          email,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      
+      // Store user data in Zustand store
+      useUserStore.getState().setUser(response.data.user);
+      console.log("User data:", response.data.user);
+      
+      toast.success("Login successful!");
+      navigate('/dashboard');
+      
+      // Call the onLogin prop to notify parent component
+      onLogin({
         email,
         password,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
-    console.log(response);
-    toast.success("Login successful!");
-    navigate('/dashboard');
-    // Call the onLogin prop to notify parent component
-    onLogin({
-      email,
-      password,
-    });
+      });
+    } catch (error: any) {
+      console.error('Error logging in:', error);
+      const errorMessage = error.response?.data?.message || "Login failed";
+      toast.error(errorMessage);
+    }
   };
 
   return (
+    <>
+    <Toaster />
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <div className="flex flex-col items-center gap-1 text-center">
         <h1 className="text-2xl font-bold text-blue-800">
@@ -122,5 +135,6 @@ export function LoginForm({ onLogin }: LoginFormProps) {
         </a>
       </div>
     </form>
+    </>
   );
 }

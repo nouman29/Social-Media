@@ -1,9 +1,13 @@
 import axios from "axios";
 import { Bell, MessageSquare, Search, User } from "lucide-react";
+import { useUserStore } from "@/store/userStore";
+
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
   
 export default function TopNav() {
+  const { user } = useUserStore();
+
 
   const handleLogout = async () => {
     const response = await axios.post('http://localhost:3000/api/auth/logout',{},{
@@ -29,7 +33,7 @@ export default function TopNav() {
           <MessageSquare className="cursor-pointer hover:text-gray-300 w-5 h-5" />
           <Bell className="cursor-pointer hover:text-gray-300 w-5 h-5" />
           <div className="w-7 h-7 rounded-full bg-white" onClick={() => navigate('/profile')}>
-            <img src="person.jpg" alt="" className="w-full h-full rounded-full" />
+            <img src={user?.profilePicture} alt="" className="w-full h-full rounded-full object-cover" />
           </div>
         </div>
       </div>
@@ -58,7 +62,7 @@ export default function TopNav() {
         <MessageSquare className="cursor-pointer hover:text-gray-300" />
         <Bell className="cursor-pointer hover:text-gray-300" />
         <div className="w-9 h-9 rounded-full bg-white" onClick={() => navigate('/profile')}>
-          <img src="person.jpg" alt="" className="w-full h-full rounded-full" />
+          <img src={user?.profilePicture} alt="" className="w-full h-full rounded-full object-cover" />
         </div>
         {/* add a logout button */}
         <button className="cursor-pointer p-2 bg-white text-black rounded-md hover:bg-gray-100 text-sm" onClick={() => handleLogout()}>Logout</button>

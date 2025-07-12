@@ -2,8 +2,12 @@ import axios from "axios";
 import { Image, MapPin, Smile, Tag } from "lucide-react";
 import { useState } from "react";
 import Cookies from 'js-cookie';
+import { useUserStore } from "@/store/userStore";
+
 
 export default function PostBox() {
+  const { user } = useUserStore();
+
 
   const [post, setPost] = useState<string>("");
   const [postedpic, setPostedpic] = useState('');
@@ -45,7 +49,7 @@ export default function PostBox() {
       {/* Top: Profile + Input */}
       <div className="flex flex-col md:flex-row gap-3 md:gap-4">
         <img
-          src="person.jpg" // Replace with your image path
+          src={user?.profilePicture} // Replace with your image path
           alt="profile"
           className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
         />
